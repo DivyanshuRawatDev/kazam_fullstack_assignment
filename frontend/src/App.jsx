@@ -4,7 +4,7 @@ import axios from "axios";
 import Task from "./components/Task";
 
 // Connect to your Socket.io server
-const socket = io("https://kazam-fullstack-assignment.onrender.com/");
+const socket = io("http://localhost:8080");
 
 function App() {
   const [tasks, setTasks] = useState([]);
@@ -13,7 +13,7 @@ function App() {
   // Fetch existing tasks when the component mounts
   useEffect(() => {
     axios
-      .get("https://kazam-fullstack-assignment.onrender.com//api/fetchAllTasks")
+      .get("http://localhost:8080/api/fetchAllTasks")
       .then((response) => setTasks(response.data))
       .catch((error) => console.error("Error fetching tasks:", error));
   }, []);
