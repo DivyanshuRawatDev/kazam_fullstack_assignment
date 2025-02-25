@@ -3,14 +3,12 @@ import { io } from "socket.io-client";
 import axios from "axios";
 import Task from "./components/Task";
 
-// Connect to your Socket.io server
 const socket = io("http://localhost:8080");
 
 function App() {
   const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState("");
 
-  // Fetch existing tasks when the component mounts
   useEffect(() => {
     axios
       .get("http://localhost:8080/api/fetchAllTasks")
@@ -18,28 +16,22 @@ function App() {
       .catch((error) => console.error("Error fetching tasks:", error));
   }, []);
 
-  // Listen for new task events from the server
   useEffect(() => {
     socket.on("newTask", (task) => {
       setTasks((prevTasks) => [...prevTasks, task]);
     });
-
-    // Cleanup the listener on unmount
     return () => {
       socket.off("newTask");
     };
   }, []);
 
-  // Handler for adding a new task
   const handleAdd = () => {
     if (newTask.trim() === "") return;
 
     const taskObj = { task: newTask };
 
-    // Emit the "add" event via Socket.io to the backend
     socket.emit("add", taskObj);
 
-    // Optionally update the UI immediately (optimistic update)
     setTasks((prevTasks) => [...prevTasks, taskObj]);
     setNewTask("");
   };
